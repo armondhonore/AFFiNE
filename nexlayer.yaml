@@ -1,0 +1,29 @@
+application:
+  name: affine
+  pods:
+    - name: graphql
+      image: ghcr.io/toeverything/affine-graphql:stable
+      path: /
+      servicePorts:
+        - 3010
+      vars:
+        NODE_ENV: production
+        DATABASE_URL: postgres://affine:affine@postgres.pod:5432/affine
+        REDIS_SERVER_HOST: redis.pod
+        AFFINE_SERVER_HTTPS: "true"
+    - name: postgres
+      image: postgres:16
+      servicePorts:
+        - 5432
+      vars:
+        POSTGRES_DB: affine
+        POSTGRES_USER: affine
+        POSTGRES_PASSWORD: affine
+      volumes:
+        - name: db
+          mountPath: /var/lib/postgresql
+          size: 10Gi
+    - name: redis
+      image: redis:7-alpine
+      servicePorts:
+        - 6379
