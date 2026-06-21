@@ -12,6 +12,8 @@ application:
       REDIS_SERVER_HOST: redis.pod
       AFFINE_SERVER_HTTPS: "true"
       AFFINE_SERVER_PORT: "3010"
+      AFFINE_SERVER_HOST: "relaxed-weasel-affine.cloud.nexlayer.ai"
+      AFFINE_TELEMETRY_ENABLE: "false"
   - name: postgres
     image: postgres:16
     servicePorts:
