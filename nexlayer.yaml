@@ -6,9 +6,6 @@ application:
     path: /
     servicePorts:
     - 3010
-    # AFFiNE needs its DB schema migrated before the server starts (self-host-predeploy).
-    # Run it then launch the server in the same pod.
-    command: ["sh", "-c", "node ./scripts/self-host-predeploy && node ./dist/index.js"]
     vars:
       NODE_ENV: production
       DATABASE_URL: postgres://affine:affine@postgres.pod:5432/affine
