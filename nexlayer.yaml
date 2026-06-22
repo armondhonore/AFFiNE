@@ -2,10 +2,13 @@ application:
   name: affine
   pods:
   - name: graphql
-    image: ghcr.io/toeverything/affine-graphql:latest
+    image: ghcr.io/toeverything/affine-graphql:stable
     path: /
     servicePorts:
     - 3010
+    # AFFiNE needs its DB schema migrated before the server starts (self-host-predeploy).
+    # Run it then launch the server in the same pod.
+    command: ["sh", "-c", "node ./scripts/self-host-predeploy && node ./dist/index.js"]
     vars:
       NODE_ENV: production
       DATABASE_URL: postgres://affine:affine@postgres.pod:5432/affine
@@ -13,9 +16,11 @@ application:
       AFFINE_SERVER_HTTPS: "true"
       AFFINE_SERVER_PORT: "3010"
       AFFINE_SERVER_HOST: "relaxed-weasel-affine.cloud.nexlayer.ai"
+      AFFINE_SERVER_EXTERNAL_URL: "https://relaxed-weasel-affine.cloud.nexlayer.ai"
       AFFINE_TELEMETRY_ENABLE: "false"
   - name: postgres
-    image: postgres:16
+    # AFFiNE requires the pgvector extension — plain postgres fails the migration.
+    image: pgvector/pgvector:pg16
     servicePorts:
     - 5432
     vars:
