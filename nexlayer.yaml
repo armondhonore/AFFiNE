@@ -2,8 +2,12 @@ application:
   name: affine
   pods:
   - name: graphql
-    image: ghcr.io/toeverything/affine-graphql:stable
+    # Re-pushed from ghcr.io/toeverything/affine:stable. The old -graphql package is
+    # no longer anonymously pullable; the consolidated affine image replaces it.
+    image: registry.nexlayer.io/user_01kece1xyh817dwff7wnarhkxd/affine:stable
     path: /
+    # Run the self-host DB migration (requires pgvector) before booting the server.
+    command: ["sh", "-c", "node ./scripts/self-host-predeploy.js && node ./dist/main.js"]
     servicePorts:
     - 3010
     vars:
@@ -17,7 +21,7 @@ application:
       AFFINE_TELEMETRY_ENABLE: "false"
   - name: postgres
     # AFFiNE requires the pgvector extension — plain postgres fails the migration.
-    image: pgvector/pgvector:pg16
+    image: mirror.gcr.io/pgvector/pgvector:pg16
     servicePorts:
     - 5432
     vars:
